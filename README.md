@@ -26,4 +26,4 @@ content-type: application/json
 
 {"id":1,"title":"Set up server","done":true}
 ## Swagger UI Documentation
-![Swagger UI Screenshot](Swagger%20Screenshots/6.png)
+![Swagger UI Screenshot](Swagger%20Screenshots/1.png)
