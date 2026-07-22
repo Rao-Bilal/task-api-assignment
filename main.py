@@ -44,6 +44,11 @@ def init_db():
 
 init_db()
 
+
+def row_to_task(row):
+    return {"id": row["id"], "title": row["title"], "done": bool(row["done"])}
+
+
 tasks = [
     {"id": 1, "title": "Set up server", "done": True},
     {"id": 2, "title": "Build CRUD endpoints", "done": False},
@@ -63,15 +68,20 @@ def health_check():
 
 @app.get("/tasks")
 def get_tasks():
-    return tasks
+    conn = get_connection()
+    rows = conn.execute("SELECT * FROM tasks").fetchall()
+    conn.close()
+    return [row_to_task(row) for row in rows]
 
 
 @app.get("/tasks/{task_id}")
 def get_task(task_id: int):
-    for task in tasks:
-        if task["id"] == task_id:
-            return task
-    return JSONResponse(status_code=404, content={"error": f"Task {task_id} not found"})
+    conn = get_connection()
+    row = conn.execute("SELECT * FROM tasks WHERE id = ?", (task_id,)).fetchone()
+    conn.close()
+    if row is None:
+        return JSONResponse(status_code=404, content={"error": f"Task {task_id} not found"})
+    return row_to_task(row)
 
 
 @app.post("/tasks", status_code=201)
