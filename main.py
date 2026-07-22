@@ -89,10 +89,14 @@ def create_task(task_data: dict):
     title = task_data.get("title")
     if not title or not str(title).strip():
         return JSONResponse(status_code=400, content={"error": "Title is required and cannot be empty"})
-    new_id = max((t["id"] for t in tasks), default=0) + 1
-    new_task = {"id": new_id, "title": title, "done": False}
-    tasks.append(new_task)
-    return new_task
+
+    conn = get_connection()
+    cur = conn.execute("INSERT INTO tasks (title, done) VALUES (?, ?)", (title, False))
+    new_id = cur.lastrowid
+    conn.commit()
+    row = conn.execute("SELECT * FROM tasks WHERE id = ?", (new_id,)).fetchone()
+    conn.close()
+    return row_to_task(row)
 
 
 @app.put("/tasks/{task_id}")
