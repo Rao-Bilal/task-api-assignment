@@ -34,3 +34,20 @@ content-type: application/json
 ## Swagger UI Documentation
 
 ![Swagger UI Screenshot](screenshots/swaggerDoc.png)
+
+## Database
+
+- **Why SQLite**: lightweight, file-based, requires no separate database server — a good fit for a small CRUD assignment.
+- **Database file**: `tasks.db`, created automatically in the project root the first time the app runs.
+- **How to start**: `uvicorn main:app --reload --port 5000` — the database and `tasks` table are created automatically on startup, and three example tasks are seeded only if the table is empty.
+- **Example SQL query I ran**: `SELECT * FROM tasks WHERE done = 1;`
+
+### Screenshots
+
+Database structure (Browse Data tab):
+
+![Database structure](screenshots/Database.png)
+
+Manual SQL queries executed (Execute SQL tab):
+
+![SQL queries executed](screenshots/Databasee.png)
