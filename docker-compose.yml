@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:16
+    container_name: tasks-postgres
+    environment:
+      POSTGRES_USER: taskuser
+      POSTGRES_PASSWORD: taskpass
+      POSTGRES_DB: tasksdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+
+  app:
+    build: .
+    container_name: tasks-app
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://taskuser:taskpass@db:5432/tasksdb
+
+volumes:
+  pgdata:

@@ -51,3 +51,12 @@ Database structure (Browse Data tab):
 Manual SQL queries executed (Execute SQL tab):
 
 ![SQL queries executed](screenshots/Databasee.png)
+
+## Containerized Stack (A3)
+
+- **Architecture**: `main.py` contains only FastAPI routes and validation. All database access lives in `repository.py`. Swapping SQLite (A2) for Postgres (A3) required changing only `repository.py` ? routes and service logic were untouched, proving the API/storage separation from A2.
+- **Services**: `docker-compose.yml` defines two services ? `db` (Postgres 16 with a named volume `pgdata`) and `app` (this FastAPI service, built from the included `Dockerfile`).
+- **Config**: connection string lives in `.env` (gitignored). `.env.example` is committed as a template ? copy it to `.env` before running.
+- **Table creation**: `init-db/init.sql` runs automatically the first time the Postgres container starts with an empty volume ? creates the `tasks` table and seeds 3 example rows if empty.
+- **How to run**: `docker compose up --build`, then visit `http://127.0.0.1:8000/tasks`.
+- **Persistence proof**: created a task via `POST /tasks`, then ran `docker compose down` (removes both containers) followed by `docker compose up`. The task was still present afterward, confirming the Postgres volume ? not the containers ? is what holds the data.
